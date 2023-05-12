@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { binding } from './BindCast'
+import { ref, onBeforeUnmount } from 'vue'
+import { binding,closeBroadcastChannel } from './BindCast'
 
 defineProps<{ msg: string }>()
 
-//const count = ref(0)
-//const countBind = binding(count, 'count')
-const countBind = binding(ref(0), 'count')
+const count = ref(0)
+const countBind = binding(count)("count")
+const anotherCount = ref(99)
+const anotherCountBind = binding(anotherCount)("anotherCount")
+
+onBeforeUnmount(() => {
+  closeBroadcastChannel()
+})
 
 </script>
 
@@ -15,6 +20,7 @@ const countBind = binding(ref(0), 'count')
 
   <div class="card">
     <button type="button" @click="countBind++">count is {{ countBind }}</button>
+    <button type="button" @click="anotherCountBind++">anotherCount is {{ anotherCountBind }}</button>
     <p>
       Edit
       <code>components/HelloWorld.vue</code> to test HMR
