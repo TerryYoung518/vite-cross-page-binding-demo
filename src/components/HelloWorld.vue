@@ -5,9 +5,9 @@ import { binding,closeBroadcastChannel } from './BindCast'
 defineProps<{ msg: string }>()
 
 const count = ref(0)
-const countBind = binding(count)("count")
+const countBind = binding(count, "count")
 const anotherCount = ref(99)
-const anotherCountBind = binding(anotherCount)("anotherCount")
+const anotherCountBind = binding(anotherCount, "anotherCount")
 
 onBeforeUnmount(() => {
   closeBroadcastChannel()
