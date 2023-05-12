@@ -1,4 +1,4 @@
-# Vite Cross Page Bingding demo
+# Vite Cross Page Binding Demo
 # 跨页面数据双向绑定
 
 这个项目使用了原生JS的`BroadcastChannel`类，实现了同源页面的跨页面数据双向绑定。
