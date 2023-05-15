@@ -1,8 +1,7 @@
-import { Ref, computed } from "vue";
-
 interface MessageData {
   fieldKey: string;
   value: unknown;
+  key: string | symbol;
 }
 
 class BroadcastChannelManager {
@@ -42,22 +41,41 @@ class BroadcastChannelManager {
   }
 }
 
-export function binding<T>(val: Ref<T>, fieldKey: string): Ref<T> {
+export function bind<T>(target: T, fieldKey: string): T {
+  if (typeof target !== "object" || target == null) {
+    return target;
+  }
+
   const manager = BroadcastChannelManager.getInstance();
 
+  const observed = new Proxy(target, {
+    get(target, key, receiver) {
+      if (key === '__v_raw') { // 触发vue proxy中setter的trigger使dom更新
+        return target
+      }
+      const result = Reflect.get(target, key, receiver);
+
+      return bind(result, fieldKey + '.' + key.toString());
+    },
+    set(target, key, value, receiver) {
+      let oldValue = target[key as keyof T];
+      
+      const result = Reflect.set(target, key, value, receiver);
+      // oldValue !== value 防止回声
+      // key.toString()[0] !== '_' 不广播私有变量，否则RefImpl的_raw_value与_value被提前改变，导致dom不更新
+      if (oldValue !== value && key.toString()[0] !== '_') manager.postMessage({ fieldKey, value, key });
+      return result;
+    },
+  });
+
   manager.getMessage<MessageData>((data) => {
+    console.log(data)
     if (data.fieldKey === fieldKey) {
-      val.value = data.value as T;
+      observed[data.key as keyof T] = data.value as any;
     }
   }, fieldKey);
 
-  return computed<T>({
-    get: () => val.value,
-    set: (value: T) => {
-      val.value = value;
-      manager.postMessage({ fieldKey, value });
-    },
-  });
+  return observed;
 }
 
 export function closeBroadcastChannel(): void {

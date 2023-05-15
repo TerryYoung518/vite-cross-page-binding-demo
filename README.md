@@ -10,13 +10,13 @@
 引入`BindCast.ts`：
 
 ```typescript
-import { binding } from './BindCast'
+import { bind } from './BindCast'
 ```
 
-创建`ref`后传入，使用返回的`Ref`对象。
+创建`ref`或`reactive`后传入，使用返回的代理对象。
 
 ```typescript
-const countBind = binding(ref(0), 'count')
+const countBind = bind(ref(0), 'count')
 ```
 
 ## 运行样例
