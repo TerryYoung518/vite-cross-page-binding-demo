@@ -71,7 +71,7 @@ export function bind<T>(target: T, fieldKey: string): T {
   manager.getMessage<MessageData>((data) => {
     console.log(data)
     if (data.fieldKey === fieldKey) {
-      observed[data.key as keyof T] = data.value as any;
+      target[data.key as keyof T] = data.value as any;
     }
   }, fieldKey);
 
