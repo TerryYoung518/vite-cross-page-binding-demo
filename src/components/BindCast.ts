@@ -62,7 +62,7 @@ export function bind<T>(target: T, fieldKey: string): T {
       
       const result = Reflect.set(target, key, value, receiver);
       // oldValue !== value 防止回声
-      // key.toString()[0] !== '_' 不广播私有变量，否则RefImpl的_raw_value与_value被提前改变，导致dom不更新
+      // key.toString()[0] !== '_' 不广播私有变量，否则RefImpl的_rawValue与_value被提前改变，导致dom不更新
       if (oldValue !== value && key.toString()[0] !== '_') manager.postMessage({ fieldKey, value, key });
       return result;
     },
