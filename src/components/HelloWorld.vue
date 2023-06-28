@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onBeforeUnmount, reactive } from 'vue'
-import { bind, closeBroadcastChannel } from './BindCast'
+// import { bind, closeBroadcastChannel } from './BindCast'
+import { bind, removeStorageListener } from './BindStorage'
 
 defineProps<{ msg: string }>()
 
@@ -21,11 +22,10 @@ const complexRefBind = bind(complexRef, "complexRef")
 const array = ref([1])
 const arrayBind = bind(array, "array")
 
-console.log(array)
-console.log(arrayBind)
 
 onBeforeUnmount(() => {
-  closeBroadcastChannel()
+  // closeBroadcastChannel()
+  removeStorageListener()
 })
 
 </script>
